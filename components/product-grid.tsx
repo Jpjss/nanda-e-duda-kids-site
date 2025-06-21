@@ -155,6 +155,7 @@ export default function ProductGrid() {
                 </CardHeader>
                 <CardContent className="p-4 flex-1 flex flex-col justify-between w-full">
                   <CardTitle className="text-lg font-semibold text-purple-700 mb-2">{product.name}</CardTitle>
+                  <p className="text-sm text-gray-600 mb-1">Tamanhos: 2, 4, 6, 8, 10, 12, 14 anos</p>
                   <p className="text-xl font-bold text-pink-800">{product.price}</p>
                 </CardContent>
                 <CardFooter className="p-4 pt-0 w-full flex flex-col gap-2">
@@ -204,6 +205,7 @@ export default function ProductGrid() {
                       </CardHeader>
                       <CardContent className="p-4 flex-1 flex flex-col justify-between w-full">
                         <CardTitle className="text-lg font-semibold text-purple-700 mb-2">{product.name}</CardTitle>
+                        <p className="text-sm text-gray-600 mb-1">Tamanhos: 2, 4, 6, 8, 10, 12, 14 anos</p>
                         <p className="text-xl font-bold text-pink-800">{product.price}</p>
                       </CardContent>
                       <CardFooter className="p-4 pt-0 w-full flex flex-col gap-2">
