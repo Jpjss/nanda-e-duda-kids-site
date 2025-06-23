@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Button from "@/components/ui/button"
 import { useSearch } from "@/context/search-context"
 import { useSearchParams } from "next/navigation" // Importar useSearchParams
+import FreteCalculator from "@/components/frete-calculator"
 
 export default function ProductGrid() {
   const { searchTerm } = useSearch()
@@ -138,44 +139,47 @@ export default function ProductGrid() {
           </div>
         </div>
         {productsToShow.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 py-10">
-            {productsToShow.map((product) => (
-              <Card
-                key={product.id}
-                className="flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden"
-              >
-                <CardHeader className="p-0">
-                  <Image
-                    src={product.image || "/placeholder.png"}
-                    width={300}
-                    height={300}
-                    alt={product.alt}
-                    className="aspect-square object-cover w-full rounded-t-lg"
-                  />
-                </CardHeader>
-                <CardContent className="p-4 flex-1 flex flex-col justify-between w-full">
-                  <CardTitle className="text-lg font-semibold text-purple-700 mb-2">{product.name}</CardTitle>
-                  <p className="text-sm text-gray-600 mb-1">Tamanhos: 2, 4, 6, 8, 10, 12, 14 anos</p>
-                  <p className="text-xl font-bold text-pink-800">{product.price}</p>
-                </CardContent>
-                <CardFooter className="p-4 pt-0 w-full flex flex-col gap-2">
-                  {" "}
-                  {/* Alterado para flex-col e gap */}
-                  <Link href={`/products/${product.id}`} passHref className="w-full">
-                    <Button
-                      variant="outline"
-                      className="w-full border-pink-500 text-pink-800 hover:bg-pink-100 transition-colors duration-300 rounded-full"
-                    >
-                      Ver Detalhes
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 py-10">
+              {productsToShow.map((product) => (
+                <Card
+                  key={product.id}
+                  className="flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden"
+                >
+                  <CardHeader className="p-0">
+                    <Image
+                      src={product.image || "/placeholder.png"}
+                      width={300}
+                      height={300}
+                      alt={product.alt}
+                      className="aspect-square object-cover w-full rounded-t-lg"
+                    />
+                  </CardHeader>
+                  <CardContent className="p-4 flex-1 flex flex-col justify-between w-full">
+                    <CardTitle className="text-lg font-semibold text-purple-700 mb-2">{product.name}</CardTitle>
+                    <p className="text-sm text-gray-600 mb-1">Tamanhos: 2, 4, 6, 8, 10, 12, 14 anos</p>
+                    <p className="text-xl font-bold text-pink-800">{product.price}</p>
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0 w-full flex flex-col gap-2">
+                    {" "}
+                    {/* Alterado para flex-col e gap */}
+                    <Link href={`/products/${product.id}`} passHref className="w-full">
+                      <Button
+                        variant="outline"
+                        className="w-full border-pink-500 text-pink-800 hover:bg-pink-100 transition-colors duration-300 rounded-full"
+                      >
+                        Ver Detalhes
+                      </Button>
+                    </Link>
+                    <Button className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full">
+                      Adicionar ao Carrinho
                     </Button>
-                  </Link>
-                  <Button className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full">
-                    Adicionar ao Carrinho
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+            <FreteCalculator />
+          </>
         ) : (
           <div className="py-10 text-center">
             <p className="text-lg text-pink-800 mb-8">
