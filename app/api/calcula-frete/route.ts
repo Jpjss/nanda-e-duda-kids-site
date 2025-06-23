@@ -42,11 +42,13 @@ export async function POST(req: NextRequest) {
   try {
     data = await response.json()
   } catch (e) {
+    console.error("Erro ao interpretar resposta da API do Melhor Envio:", e)
     return NextResponse.json({ error: "Erro ao interpretar resposta da API do Melhor Envio." }, { status: 500 })
   }
 
   if (!response.ok) {
-    return NextResponse.json({ error: data?.message || "Erro desconhecido na API do Melhor Envio." }, { status: response.status })
+    console.error("Erro da API do Melhor Envio:", data)
+    return NextResponse.json({ error: data?.message || JSON.stringify(data) || "Erro desconhecido na API do Melhor Envio." }, { status: response.status })
   }
 
   return NextResponse.json(data)
