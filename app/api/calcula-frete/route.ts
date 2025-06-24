@@ -6,6 +6,10 @@ const MELHOR_ENVIO_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiw
 export async function POST(req: NextRequest) {
   const { cepDestino } = await req.json()
 
+  if (!cepDestino || !/^\d{5}-?\d{3}$/.test(cepDestino)) {
+    return NextResponse.json({ error: "CEP inválido" }, { status: 400 });
+  }
+
   // Exemplo fixo de origem (substitua pelo seu CEP de origem real)
   const cepOrigem = "74063390"
 
@@ -51,5 +55,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: data?.message || JSON.stringify(data) || "Erro desconhecido na API do Melhor Envio." }, { status: response.status })
   }
 
-  return NextResponse.json(data)
+  // Resposta defensiva para diferentes formatos da API
+  if (Array.isArray(data) && data.length > 0 && data[0].services) {
+    return NextResponse.json(data[0])
+  } else if (data && data.services) {
+    return NextResponse.json(data)
+  } else {
+    return NextResponse.json({ error: "Resposta inesperada da API do Melhor Envio." }, { status: 500 })
+  }
 }
