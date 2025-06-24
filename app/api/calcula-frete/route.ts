@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const { cepDestino } = await req.json()
 
   // Exemplo fixo de origem (substitua pelo seu CEP de origem real)
-  const cepOrigem = "01001-000"
+  const cepOrigem = "74063390"
 
   // Exemplo fixo de pacote (ajuste conforme seus produtos)
   const payload = {
