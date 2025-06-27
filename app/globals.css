@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 100% 97%; /* azul bem claro */
     --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
@@ -72,5 +72,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: hsl(210, 100%, 97%, 0.7); /* azul claro translúcido extra */
   }
 }
