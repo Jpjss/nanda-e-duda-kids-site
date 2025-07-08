@@ -20,6 +20,43 @@ Your project is live at:
 
 Continue building your app on:
 
+## Setup and Configuration
+
+### Environment Variables
+
+This project requires certain environment variables to be configured for full functionality:
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Configure the required variables in `.env.local`:
+   - `MELHOR_ENVIO_TOKEN`: Your Melhor Envio API token for shipping calculations
+     - Get your token from [Melhor Envio API documentation](https://melhorenvio.com.br/docs/authentication)
+
+### Local Development
+
+To run the project locally:
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Build for Production
+
+```bash
+# Build the project
+npm run build
+
+# Start production server
+npm start
+```
+
 
 
 ## How It Works
