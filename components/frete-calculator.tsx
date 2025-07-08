@@ -2,9 +2,20 @@
 
 import { useState } from "react"
 
+interface FreteService {
+  id: string
+  name: string
+  price: string
+  delivery_time: number
+}
+
+interface FreteResult {
+  services: FreteService[]
+}
+
 export default function FreteCalculator() {
   const [cep, setCep] = useState("")
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<FreteResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -27,7 +38,7 @@ export default function FreteCalculator() {
       } else {
         setResult(data[0])
       }
-    } catch (err) {
+    } catch {
       setError("Erro ao consultar o frete.")
     } finally {
       setLoading(false)
@@ -60,7 +71,7 @@ export default function FreteCalculator() {
         <div className="mt-4">
           <h4 className="font-semibold mb-2">Opções de frete:</h4>
           <ul className="space-y-2">
-            {result.services.map((service: any) => (
+            {result.services.map((service: FreteService) => (
               <li key={service.id} className="border rounded p-2">
                 <div className="font-bold text-purple-700">{service.name}</div>
                 <div>Preço: <span className="text-pink-800 font-semibold">R$ {Number(service.price).toFixed(2)}</span></div>

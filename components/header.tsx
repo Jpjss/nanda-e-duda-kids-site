@@ -8,13 +8,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useSearch } from "@/context/search-context"
 import { useRouter, usePathname } from "next/navigation"
-import { useToast } from "@/hooks/use-toast" // Assumindo que useToast está disponível
 
 export default function Header() {
   const { searchTerm, setSearchTerm } = useSearch()
   const router = useRouter()
   const pathname = usePathname()
-  const { toast } = useToast()
 
   const handleCategoryClick = (category: string) => {
     setSearchTerm("") // Limpa o termo de busca ao clicar em uma categoria
