@@ -5,11 +5,15 @@ import Link from "next/link"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Button from "@/components/ui/button"
 import { useSearch } from "@/context/search-context"
+import { useCart } from "@/context/cart-context"
 import { useSearchParams } from "next/navigation" // Importar useSearchParams
+import { useToast } from "@/hooks/use-toast"
 import FreteCalculator from "@/components/frete-calculator"
 
 export default function ProductGrid() {
   const { searchTerm } = useSearch()
+  const { addToCart } = useCart()
+  const { toast } = useToast()
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get("category")?.toLowerCase() || ""
 
@@ -125,6 +129,14 @@ export default function ProductGrid() {
       ? `Exibindo resultados para "${searchTerm}"`
       : "Descubra a nossa coleção de roupas infantis, feitas com carinho e pensadas para o conforto e a alegria dos seus filhos."
 
+  const handleAddToCart = (product: any) => {
+    addToCart(product)
+    toast({
+      title: "Produto adicionado!",
+      description: `${product.name} foi adicionado ao seu carrinho.`
+    })
+  }
+
   return (
     <section id="product-grid" className="w-full py-12 md:py-24 lg:py-32 bg-white">
       <div className="container px-4 md:px-6">
@@ -171,7 +183,10 @@ export default function ProductGrid() {
                         Ver Detalhes
                       </Button>
                     </Link>
-                    <Button className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full">
+                    <Button 
+                      className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full"
+                      onClick={() => handleAddToCart(product)}
+                    >
                       Adicionar ao Carrinho
                     </Button>
                   </CardFooter>
@@ -223,7 +238,10 @@ export default function ProductGrid() {
                             Ver Detalhes
                           </Button>
                         </Link>
-                        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full">
+                        <Button 
+                          className="w-full bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300 rounded-full"
+                          onClick={() => handleAddToCart(product)}
+                        >
                           Adicionar ao Carrinho
                         </Button>
                       </CardFooter>

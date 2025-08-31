@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Search, MessageSquareText, User, ShoppingCart, ChevronDown } from "lucide-react"
+import { Search, MessageSquareText, User, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Button from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useSearch } from "@/context/search-context"
 import { useRouter, usePathname } from "next/navigation"
 import { useToast } from "@/hooks/use-toast" // Assumindo que useToast está disponível
+import CartComponent from "@/components/cart"
 
 export default function Header() {
   const { searchTerm, setSearchTerm } = useSearch()
@@ -104,17 +105,7 @@ export default function Header() {
             <User className="h-6 w-6" />
             Minha conta
           </Link>
-          <Link
-            href="#"
-            className="relative flex flex-col items-center text-xs hover:text-purple-700 transition-colors"
-            prefetch={false}
-          >
-            <ShoppingCart className="h-6 w-6" />
-            <span className="absolute -top-1 -right-1 bg-pink-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">
-              0
-            </span>
-            Meu carrinho
-          </Link>
+          <CartComponent />
         </div>
       </div>
 

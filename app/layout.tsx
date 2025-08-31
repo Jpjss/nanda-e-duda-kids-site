@@ -5,6 +5,8 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/header"
 import { SearchProvider } from "@/context/search-context"
+import { CartProvider } from "@/context/cart-context"
+import { CheckoutProvider } from "@/context/checkout-context-v2"
 import { Suspense } from "react"
 import { Toaster } from "@/components/ui/toaster" // Importar Toaster
 
@@ -26,10 +28,14 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Suspense fallback={<div>Loading...</div>}>
-            <SearchProvider>
-              <Header />
-              {children}
-            </SearchProvider>
+            <CartProvider>
+              <CheckoutProvider>
+                <SearchProvider>
+                  <Header />
+                  {children}
+                </SearchProvider>
+              </CheckoutProvider>
+            </CartProvider>
           </Suspense>
           <Toaster /> {/* Adicionar Toaster aqui */}
         </ThemeProvider>

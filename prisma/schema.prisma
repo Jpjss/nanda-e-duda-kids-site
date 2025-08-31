@@ -1,0 +1,212 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Modelo de Categorias
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relacionamentos
+  products    Product[]
+  
+  @@map("categories")
+}
+
+// Modelo de Produtos
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  salePrice   Float?
+  image       String
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  
+  // Relacionamentos
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  variants   ProductVariant[]
+  orderItems OrderItem[]
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modelo de Variações de Produto (Tamanhos, Cores)
+model ProductVariant {
+  id        String  @id @default(cuid())
+  size      String?
+  color     String?
+  stock     Int     @default(0)
+  sku       String? @unique
+  isActive  Boolean @default(true)
+  
+  // Relacionamentos
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@unique([productId, size, color])
+  @@map("product_variants")
+}
+
+// Modelo de Usuários
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  cpf       String?  @unique
+  isAdmin   Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relacionamentos
+  addresses Address[]
+  orders    Order[]
+  
+  @@map("users")
+}
+
+// Modelo de Endereços
+model Address {
+  id           String  @id @default(cuid())
+  street       String
+  number       String
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  zipCode      String
+  isDefault    Boolean @default(false)
+  
+  // Relacionamentos
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+  
+  @@map("addresses")
+}
+
+// Modelo de Pedidos
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   String      @unique
+  status        OrderStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod
+  
+  // Valores
+  subtotal      Float
+  shippingCost  Float @default(0)
+  total         Float
+  
+  // Dados do cliente (guest checkout)
+  customerName  String
+  customerEmail String
+  customerPhone String
+  customerCpf   String?
+  
+  // Timestamps
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relacionamentos
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id])
+  addressId     String
+  address       Address     @relation(fields: [addressId], references: [id])
+  items         OrderItem[]
+  payments      Payment[]
+  
+  @@map("orders")
+}
+
+// Modelo de Itens do Pedido
+model OrderItem {
+  id         String  @id @default(cuid())
+  quantity   Int
+  price      Float
+  unitPrice  Float
+  size       String?
+  color      String?
+  
+  // Relacionamentos
+  orderId    String
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+}
+
+// Modelo de Pagamentos
+model Payment {
+  id                  String        @id @default(cuid())
+  externalId          String?       @unique // ID do Mercado Pago
+  status              PaymentStatus @default(PENDING)
+  method              PaymentMethod
+  amount              Float
+  installments        Int?          @default(1)
+  pixQrCode           String?
+  pixQrCodeBase64     String?
+  pixCopyPaste        String?
+  cardLast4Digits     String?
+  approvedAt          DateTime?
+  failedAt            DateTime?
+  failureReason       String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  
+  // Relacionamentos
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@map("payments")
+}
+
+// Enums
+enum OrderStatus {
+  PENDING     // Aguardando pagamento
+  CONFIRMED   // Pagamento confirmado
+  PROCESSING  // Em preparação
+  SHIPPED     // Enviado
+  DELIVERED   // Entregue
+  CANCELLED   // Cancelado
+  REFUNDED    // Estornado
+}
+
+enum PaymentStatus {
+  PENDING     // Aguardando
+  APPROVED    // Aprovado
+  REJECTED    // Rejeitado
+  CANCELLED   // Cancelado
+  REFUNDED    // Estornado
+}
+
+enum PaymentMethod {
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+}
