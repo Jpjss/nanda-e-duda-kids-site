@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar produtos para calcular valores
-    const productIds = items.map((item: any) => item.productId)
+    const productIds = items.map((item: any) => String(item.productId))
     const products = await prisma.product.findMany({
       where: {
         id: { in: productIds },
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Calcular valores
     let subtotal = 0
     const orderItems = items.map((item: any) => {
-      const product = products.find((p: any) => p.id === item.productId)
+      const product = products.find((p: any) => p.id === String(item.productId))
       if (!product) throw new Error('Produto não encontrado')
       
       const price = product.salePrice || product.price
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       subtotal += itemTotal
 
       return {
-        productId: item.productId,
+        productId: String(item.productId),
         quantity: item.quantity,
         price: price,
         size: item.size,

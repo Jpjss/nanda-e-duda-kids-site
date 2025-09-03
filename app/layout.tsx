@@ -8,7 +8,8 @@ import { SearchProvider } from "@/context/search-context"
 import { CartProvider } from "@/context/cart-context"
 import { CheckoutProvider } from "@/context/checkout-context-v2"
 import { Suspense } from "react"
-import { Toaster } from "@/components/ui/toaster" // Importar Toaster
+import { Toaster } from "@/components/ui/toaster"
+import AuthProvider from "@/components/auth-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,19 +27,21 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <Suspense fallback={<div>Loading...</div>}>
-            <CartProvider>
-              <CheckoutProvider>
-                <SearchProvider>
-                  <Header />
-                  {children}
-                </SearchProvider>
-              </CheckoutProvider>
-            </CartProvider>
-          </Suspense>
-          <Toaster /> {/* Adicionar Toaster aqui */}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+            <Suspense fallback={<div>Loading...</div>}>
+              <CartProvider>
+                <CheckoutProvider>
+                  <SearchProvider>
+                    <Header />
+                    {children}
+                  </SearchProvider>
+                </CheckoutProvider>
+              </CartProvider>
+            </Suspense>
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

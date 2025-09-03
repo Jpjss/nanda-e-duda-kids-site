@@ -125,7 +125,6 @@ export async function POST(request: NextRequest) {
         price,
         salePrice,
         image,
-        images: images || [],
         categoryId,
         isFeatured: isFeatured || false
       }

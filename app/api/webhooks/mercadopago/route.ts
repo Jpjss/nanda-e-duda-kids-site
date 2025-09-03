@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
             externalId: paymentId,
             status: paymentStatus,
             method: paymentMethod,
-            amount: paymentInfo.transaction_amount,
+            amount: paymentInfo.transaction_amount || 0,
             installments: paymentInfo.installments || 1,
             ...(paymentInfo.payment_method_id === 'pix' && {
               pixQrCode: paymentInfo.point_of_interaction?.transaction_data?.qr_code,
@@ -136,10 +136,68 @@ export async function POST(request: NextRequest) {
 
       console.log(`Pedido ${orderId} atualizado para status: ${orderStatus}`)
 
-      // TODO: Enviar email de confirmação se aprovado
+      // Enviar email de confirmação se aprovado
       if (paymentStatus === 'APPROVED') {
         console.log(`Pagamento aprovado para pedido ${orderId}`)
-        // Aqui você pode adicionar lógica para enviar email
+        
+        try {
+          // Buscar dados completos do pedido para email
+          const orderWithItems = await prisma.order.findUnique({
+            where: { id: orderId },
+            include: {
+              items: {
+                include: {
+                  product: true
+                }
+              },
+              address: true
+            }
+          })
+
+          if (orderWithItems) {
+            // Preparar dados para o email
+            const emailData = {
+              id: orderWithItems.id,
+              customerName: orderWithItems.customerName,
+              customerEmail: orderWithItems.customerEmail,
+              total: orderWithItems.total,
+              paymentMethod: orderWithItems.paymentMethod,
+              shippingStreet: orderWithItems.address.street,
+              shippingNeighborhood: orderWithItems.address.neighborhood,
+              shippingCity: orderWithItems.address.city,
+              shippingState: orderWithItems.address.state,
+              shippingZipCode: orderWithItems.address.zipCode,
+              items: orderWithItems.items.map(item => ({
+                name: item.product.name,
+                price: item.price,
+                quantity: item.quantity,
+                size: item.size,
+                color: item.color,
+                image: item.product.image
+              }))
+            }
+
+            // Enviar email de confirmação
+            const emailResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/emails/send`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                type: 'order_confirmation',
+                orderData: emailData
+              })
+            })
+
+            if (emailResponse.ok) {
+              console.log(`Email de confirmação enviado para ${orderWithItems.customerEmail}`)
+            } else {
+              console.error('Erro ao enviar email de confirmação')
+            }
+          }
+        } catch (emailError) {
+          console.error('Erro ao processar email de confirmação:', emailError)
+        }
       }
 
     } else {
