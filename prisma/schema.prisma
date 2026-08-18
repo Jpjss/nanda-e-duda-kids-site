@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // Modelo de Categorias
@@ -41,6 +41,10 @@ model Product {
   image       String
   isActive    Boolean  @default(true)
   isFeatured  Boolean  @default(false)
+  weight      Float    @default(0.3)
+  width       Float    @default(20)
+  height      Float    @default(4)
+  length      Float    @default(25)
   
   // Relacionamentos
   categoryId String
@@ -158,6 +162,7 @@ model Address {
 model Order {
   id            String      @id @default(cuid())
   orderNumber   String      @unique
+  idempotencyFingerprint String?
   status        OrderStatus @default(PENDING)
   paymentStatus PaymentStatus @default(PENDING)
   paymentMethod PaymentMethod
